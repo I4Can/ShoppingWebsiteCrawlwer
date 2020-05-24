@@ -1,0 +1,136 @@
+{
+  "spider": "aCrawler",
+  "website": "苏宁",
+  "type": "电商",
+  "index": "https://www.suning.com/",
+  "settings": {
+    "USER_AGENT": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36"
+  },
+  "keywords": [
+    "雨伞"
+  ],
+  "start_urls": [
+    {
+      "type": "dynamic",
+      "method": "sn",
+      "args": [
+        1,
+        10
+      ]
+    }
+  ],
+  "allowed_domains": [
+    "suning.com"
+  ],
+  "coupons_url":"https://icps.suning.com/icps-web/queryExtendedGift/0000000{sku_id}_{cat}_551_5510199_3598.00_0_11_1_3,30_pds__0____86_promInfoCallback.vhtm?callback=promInfoCallback",
+  "sku_ids_url":"https://tuijian. suning.com/recommend-portal/dyBase.jsonp?u=&c=159012591006671704&parameter={}&vendorId={}&cityId=551&sceneIds=1-71&count=99&callback=Recommend.bulidShopRecommend",
+  "price_url":"https://icps.suning.com/icps-web/getVarnishAllPriceNoCache/{}_551_5510199_{}_1_getClusterPrice.jsonp?callback=getClusterPrice",
+  "price_url2":"http://pas.suning.com/nspcsale_0_000000000{}_000000000{}_{}_20_021_0210101_500353_1000267_9264_12113_Z001___R9006850_2.86_0___000278188__.html?callback=pcData&_=1558664442552",
+  "price_url3":"http://pas.suning.com/nspcsale_0_0000000{}_0000000{}_{}_20_021_0210101_500353_1000267_9264_12113_Z001___R9006849_3.3_1___000278188__.html?callback=pcData&_=1558663936729",
+  "price_url4":"http://pas.suning.com/nspcsale_1_0000000{}_0000000{}_0000000000_110_551_5510199_420003_1000002_9001_10008_Z001___R9004659_0.5_5_{}__00038B612____0___12512.5_2_.html?callback=pcData&_=1590206475961",
+  "rules": "sn",
+  "item": {
+    "class": "Good",
+    "loader": "SNLoader",
+    "attrs": {
+            "_id": [
+              {
+                "method": "func",
+                "args": [
+                ]
+              }
+            ],
+      "url": [
+        {
+          "method": "attr",
+          "args": [
+            "url"
+          ]
+        }
+      ],
+      "shop": [
+        {
+          "method": "xpath",
+          "args": [
+            "//div[@class='header-shop']//a[@class='header-shop-name']/text()"
+          ]
+        }
+      ],
+      "date": [
+        {
+          "method": "func",
+          "args":[]
+        }
+      ],
+      "name": [
+        {
+          "method": "xpath",
+          "args": [
+            "//div[@class='proinfo-title']/h1[@id='itemDisplayName']/text()"
+          ]
+        }
+      ],
+      "id": [
+        {
+          "method": "func",
+          "args": [
+          ]
+        }
+      ],
+      "lowest_price": [
+        {
+          "method": "func",
+          "args": [
+          ]
+        }
+      ],
+      "highest_price": [
+        {
+          "method": "func",
+          "args": [
+
+          ]
+        }
+      ],
+      "brand": [
+        {
+          "method": "xpath",
+          "args": [
+            "//div[@class='breadcrumb']/div[@class='dropdown'][3]/span[@class='dropdown-text']/a/text()"
+          ]
+        }
+      ],
+      "type": [
+        {
+          "method": "xpath",
+          "args": [
+            "//*[@id='itemParameter']/tbody/tr[@parametercode='001360' or @parametercode='014254  ']/td[@class='val']/text()"
+          ]
+        }
+      ],
+      "img": [
+        {
+          "method": "xpath",
+          "args": [
+            "//*[@id='bigImg']/img/@src"
+          ]
+        }
+      ],
+      "category": [
+        {
+          "method": "xpath",
+          "args": [
+            "//div[@class='breadcrumb']/div[@class='dropdown'][2]/span[@class='dropdown-text']/a/text()"
+          ]
+        }
+      ],
+      "coupons": [
+        {
+          "method": "func",
+          "args": [
+          ]
+        }
+      ]
+    }
+  }
+}

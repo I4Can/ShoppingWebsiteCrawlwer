@@ -1,0 +1,125 @@
+{
+  "spider": "aCrawler",
+  "website": "京东",
+  "type": "电商",
+  "index": "https://www.jd.com/",
+  "settings": {
+    "USER_AGENT": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36"
+  },
+  "keywords": [
+    "雨伞"
+  ],
+  "start_urls": [
+    {
+      "type": "dynamic",
+      "method": "jd",
+      "args": [
+        1,
+        10
+      ]
+    }
+  ],
+  "allowed_domains": [
+    "jd.com"
+  ],
+  "price_url": "https://p.3.cn/prices/mgets?pduid={}&skuIds=J_{}",
+  "coupons_url": "https://cd.jd.com/promotion/v2?skuId={sku_id}&area=1_72_2799_0&venderId={venderId}&cat={cat}&shopId={shopId}",
+  "price_url2": "https://p.3.cn/prices/get?pduid={}&skuid=J_{}",
+  "rules": "jd",
+  "item": {
+    "class": "Good",
+    "loader": "JDLoader",
+    "attrs": {
+      "_id": [
+        {
+          "method": "func",
+          "args": [
+          ]
+        }
+      ],
+      "url": [
+        {
+          "method": "attr",
+          "args": [
+            "url"
+          ]
+        }
+      ],
+      "shop": [
+        {
+          "method": "xpath",
+          "args": [
+            "//div[@class='item']/div[@class='name']/a/text()"
+          ]
+        }
+      ],
+      "date": [
+        {
+          "method": "func",
+          "args": []
+        }
+      ],
+      "name": [
+        {
+          "method": "xpath",
+          "args": [
+            "//div[@class='sku-name']/text()"
+          ]
+        }
+      ],
+      "id": [
+        {
+          "method": "func",
+          "args": [
+          ]
+        }
+      ],
+      "lowest_price": [
+        {
+          "method": "func",
+          "args": [
+          ]
+        }
+      ],
+      "highest_price": [
+        {
+          "method": "func",
+          "args": [
+          ]
+        }
+      ],
+      "brand": [
+        {
+          "method": "xpath",
+          "args": [
+            "//div[@class='crumb fl clearfix']/div[7]/a/text()"
+          ]
+        }
+      ],
+      "type": [
+        {
+          "method": "xpath",
+          "args": [
+            "//ul[@class='parameter2 p-parameter-list']/li[1]/text()"
+          ]
+        }
+      ],
+      "img": [
+        {
+          "method": "xpath",
+          "args": [
+            "//img[@id='spec-img']/@src"
+          ]
+        }
+      ],
+      "category": [
+        {
+          "method": "xpath",
+          "args": [
+            "//div[@class='crumb fl clearfix']/div[5]/a/text()"
+          ]
+        }
+      ]
+    }
+  }
+}

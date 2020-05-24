@@ -1,0 +1,123 @@
+{
+  "spider": "aCrawler",
+  "website": "京东",
+  "type": "电商",
+  "index": "https://www.tmall.com/",
+  "settings": {
+    "USER_AGENT": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36"
+  },
+  "keywords": [
+    "手机"
+  ],
+  "start_urls": [
+    {
+      "type": "dynamic",
+      "method": "tm",
+      "args": [
+        1,
+        80
+      ]
+    }
+  ],
+  "allowed_domains": [
+    "tmall.com"
+  ],
+  "price_url": "",
+  "rules": "tm",
+  "item": {
+    "class": "Good",
+    "loader": "TMLoader",
+    "attrs": {
+      "_id": [
+        {
+          "method": "func",
+          "args": [
+          ]
+        }
+      ],
+      "url": [
+        {
+          "method": "attr",
+          "args": [
+            "url"
+          ]
+        }
+      ],
+      "shop": [
+        {
+          "method": "xpath",
+          "args": [
+            "//div[@class='name']/a[@class='shopLink']/text()"
+          ]
+        }
+      ],
+      "date": [
+        {
+          "method": "func",
+          "args": []
+        }
+      ],
+      "name": [
+        {
+          "method": "xpath",
+          "args": [
+            "//div[@class='tb-detail-hd']//a/text()"
+          ]
+        }
+      ],
+      "id": [
+        {
+          "method": "attr",
+          "args": [
+            "url"
+          ]
+        }
+      ],
+      "lowest_price": [
+        {
+          "method": "func",
+          "args": [
+          ]
+        }
+      ],
+      "highest_price": [
+        {
+          "method": "func",
+          "args": [
+          ]
+        }
+      ],
+      "brand": [
+        {
+          "method": "xpath",
+          "args": [
+            "//*[@id='attributes']//ul//p[contains(.,'品牌')]/text() or //*[@id='attributes']/ul/li[contains(.,'品牌')]/text()"
+          ]
+        }
+      ],
+      "type": [
+        {
+          "method": "xpath",
+          "args": [
+            "//*[@id='attributes']//ul//p[contains(.,'号')]/text() or //*[@id='attributes']/ul/li[contains(.,'号')]/text()"
+          ]
+        }
+      ],
+      "img": [
+        {
+          "method": "xpath",
+          "args": [
+            "//div[@class='tb-booth']//img[@id='J_ImgBooth']/@src"
+          ]
+        }
+      ],
+      "category": [
+        {
+          "method": "func",
+          "args": [
+          ]
+        }
+      ]
+    }
+  }
+}
