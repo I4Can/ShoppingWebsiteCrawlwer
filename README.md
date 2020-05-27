@@ -27,6 +27,20 @@
     'shop': ' 天环云手机数码官方旗舰店',
     'type': 'P40 Pro 5G',
     'url': 'https://product.suning.com/0070142956/11765498415.html?safp=d488778a.SFS_10185344.16146068.2&safc=prd.0.0&safpn=10010'}
+    
+    
+环境配置：
+
+    python3.7
+    
+    mongodb
+    
+    Scrapy                   2.0.1
+    
+    requests                 2.23.0
+    
+    pymongo                  3.10.1
+
 
 API接口的使用
 
@@ -43,18 +57,6 @@ spiders.crawler_api.search_with_url_or_keyword()
            输出格式->[item1,item2,...,itemN,(jd)
                       item1,item2,...,itemN(sn)]
 <br>
-
-环境配置：
-
-    python3.7
-    
-    mongodb
-    
-    Scrapy                   2.0.1
-    
-    requests                 2.23.0
-    
-    pymongo                  3.10.1
 
 
 使用示例：
