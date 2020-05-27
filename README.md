@@ -44,6 +44,19 @@ spiders.crawler_api.search_with_url_or_keyword()
                       item1,item2,...,itemN(sn)]
 <br>
 
+环境配置：
+
+    python3.7
+    
+    mongodb
+    
+    Scrapy                   2.0.1
+    
+    requests                 2.23.0
+    
+    pymongo                  3.10.1
+    <>br
+
 使用示例：
 
     from ShoppingWebsiteCrawlwer.cralwer_api import search_with_url_or_keyword
