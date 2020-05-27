@@ -6,17 +6,17 @@
 # See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 import pymongo
 import os
-import redis
+# import redis
 # Define your item pipelines here
 
 from scrapy.exceptions import DropItem
 class MongoDBPipeline(object):
     def __init__(self, host, port, db,redis_host,redis_port):
-        pool = redis.ConnectionPool(
-            host=redis_host, port=redis_port, db=0)
+        # pool = redis.ConnectionPool(
+        #     host=redis_host, port=redis_port, db=0)
         self.mongo_uri = host
         self.mongo_db = db
-        self.server = redis.Redis(connection_pool=pool)
+        # self.server = redis.Redis(connection_pool=pool)
 
 
     def open_spider(self, spider):

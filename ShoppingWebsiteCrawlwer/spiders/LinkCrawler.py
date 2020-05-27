@@ -1,5 +1,5 @@
-from ShoppingWebsiteCrawlwer.spiders.aCrawler import AcrawlerSpider
-from ShoppingWebsiteCrawlwer.utils import get_config
+from ..spiders.aCrawler import AcrawlerSpider
+from ..utils import get_config
 from scrapy import Request
 
 class LinkCrawler(AcrawlerSpider):

@@ -1,6 +1,6 @@
 import sys
+from utils  import get_config
 from scrapy.utils.project import get_project_settings
-from ShoppingWebsiteCrawlwer.utils import get_config
 from scrapy.crawler import CrawlerProcess
 from multiprocessing.context import Process
 import time

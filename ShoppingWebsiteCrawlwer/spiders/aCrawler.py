@@ -2,11 +2,11 @@
 import re
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
-from ShoppingWebsiteCrawlwer.items import *
-from ShoppingWebsiteCrawlwer.loaders import *
-from ShoppingWebsiteCrawlwer.utils import get_config
-from ShoppingWebsiteCrawlwer import urls
-from ShoppingWebsiteCrawlwer.rules import rules
+from ..items import *
+from ..loaders import *
+from ..utils import get_config
+from .. import urls
+from ..rules import rules
 import json
 import os
 import random
@@ -99,8 +99,6 @@ class AcrawlerSpider(CrawlSpider):
                         loader.add_value(key, "")
                         if key == "id" and self.web_name == "jd":
                             loader.add_value(key, ";".join(self.parse_jd_skus(response)))
-                        if key == "category" and self.web_name == "tm":
-                            loader.add_value(key, self.keyword)
                         if key == "coupons" and self.web_name == 'jd':
                             coupons=self.jd_get_coupons(response)
                             loader.add_value(key, coupons)
@@ -141,6 +139,8 @@ class AcrawlerSpider(CrawlSpider):
         coupons_page = json.loads(requests.get(
             self.coupons_url.format(shopId=shop_id, venderId=vender_id, cat=cat,
                                     sku_id=sku_id)).text)
+        print(self.coupons_url.format(shopId=shop_id, venderId=vender_id, cat=cat,
+                                    sku_id=sku_id))
         coupons = ""
         for coupon in coupons_page["skuCoupon"]:
             discount = str(coupon["discount"])
