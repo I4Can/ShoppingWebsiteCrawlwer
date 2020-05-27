@@ -28,8 +28,26 @@
     'type': 'P40 Pro 5G',
     'url': 'https://product.suning.com/0070142956/11765498415.html?safp=d488778a.SFS_10185344.16146068.2&safc=prd.0.0&safpn=10010'}
 
-实现了API接口
+API接口的使用
 
-* 传入京东或苏宁商品详情url，返回如上所示商品信息，格式->[item]
+spiders.crawler_api.search_with_url_or_keyword()
 
-* 传入关键字和要爬取的个数，得到京东、苏宁推荐的前item_num个数商品，格式->[item1,item2,...,itemN]
+    输入1：京东或苏宁商品详情页面url(url_or_keyword)
+    输出1：如上所示商品信息，定义为item
+           输出格式->[item]
+<br>
+
+    输入2：关键字(url_or_keyword)，如“手机”，“衣服”，
+           每个网站需要爬取的商品个数(item_num)
+    输出2：京东、苏宁分别推荐的前item_num个数商品
+           输出格式->[item1,item2,...,itemN,(jd)
+                      item1,item2,...,itemN(sn)]
+<br>
+
+使用示例：
+
+    from ShoppingWebsiteCrawlwer.cralwer_api import search_with_url_or_keyword
+    if __name__ == "__main__":
+        r1=search_with_url_or_keyword(url_or_keyword="https://product.suning.com/0070142956/11765498415.html")
+        r2=search_with_url_or_keyword(url_or_keyword="手机",item_num=3)
+    
