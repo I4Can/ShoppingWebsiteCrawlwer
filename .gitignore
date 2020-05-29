@@ -130,4 +130,5 @@ dmypy.json
 
 
 .idea
+*.txt
 .idea/

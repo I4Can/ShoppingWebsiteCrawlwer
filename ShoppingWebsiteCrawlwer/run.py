@@ -17,7 +17,7 @@ def crawl(settings, spider, name, custom_settings):
 # @app.route('/')
 def run():
     # while True:
-        for name in ['jd','sn']: #对应存储再config中的JSON配置文件
+        for name in ['jd']: #对应存储再config中的JSON配置文件
             custom_settings = get_config(name)  # 爬取使用的 Spider 名称
             spider = custom_settings.get('spider', 'aCrawler')
             project_settings = get_project_settings()

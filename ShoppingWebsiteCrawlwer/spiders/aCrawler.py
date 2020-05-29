@@ -28,21 +28,23 @@ class AcrawlerSpider(CrawlSpider):
         self.price_url2 = self.config.get("price_url2")
         self.price_url3 = self.config.get("price_url3")
         self.price_url4 = self.config.get("price_url4")
+        self.price_url5=self.config.get("price_url5")
         self.coupons_url = self.config.get("coupons_url")
         start_urls = config.get('start_urls')
-        if keyword:
+        if keyword is not None:
             keywords=[keyword]
         else:
             keywords = self.config.get('keywords')
+        self.start_urls=[]
         if start_urls:
-            for keyword in keywords:
-                self.keyword = keyword
+            for k in keywords:
+                self.keyword = k
                 for start_url in start_urls:
                     if start_url.get('type') == 'static':
-                        self.start_urls = start_url.get('value')
+                        self.start_urls += start_url.get('value')
                     elif start_url.get('type') == 'dynamic':
-                        self.start_urls = list(
-                            eval('urls.' + start_url.get('method'))(*start_url.get('args', []), keyword=keyword))
+                        self.start_urls += list(
+                            eval('urls.' + start_url.get('method'))(*start_url.get('args', []), keyword=k))
 
         self.allowed_domains = config.get('allowed_domains')
         super(AcrawlerSpider, self).__init__(*args, **kwargs)  # 得到父类--CrawlSpider的__init__()结果
@@ -208,8 +210,14 @@ class AcrawlerSpider(CrawlSpider):
             try:
                 data = re.search("pcData\((.*)\)", requests.get(url).text).group(1)
             except AttributeError:
-                url = self.price_url3.format(sku_id, sku_id, sup_id)
-                data = re.search("pcData\((.*)\)", requests.get(url).text).group(1)
+                try:
+                    url = self.price_url3.format(sku_id, sku_id, sup_id)
+                    data = re.search("pcData\((.*)\)", requests.get(url).text).group(1)
+                except AttributeError:
+                    url = self.price_url5.format(sku_id, sup_id)
+                    # print(url)
+                    # import time;time.sleep(2)
+                    data = re.search("pcData\((.*)\)", requests.get(url).text).group(1)
             price = eval(data)["data"]["price"]["saleInfo"][0]["promotionPrice"]
             if price:
                 hprice=lprice=price

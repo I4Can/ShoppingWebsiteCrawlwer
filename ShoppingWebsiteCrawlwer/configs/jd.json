@@ -7,7 +7,7 @@
     "USER_AGENT": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36"
   },
   "keywords": [
-    "手机"
+    "手机","电脑"
   ],
   "start_urls": [
     {
@@ -15,7 +15,7 @@
       "method": "jd",
       "args": [
         1,
-        10
+        1
       ]
     }
   ],
