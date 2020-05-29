@@ -91,7 +91,7 @@ if __name__ == "__main__":
 
     # r1 = search_with_url_or_keyword(url_or_keyword="https://item.taobao.com/item.htm?spm=a217m.12005862.1223185.2.2ddf1296YjHNEB&id=606930801180")
     #
-    r1=search_with_url_or_keyword(url_or_keyword="",item_num=2)
+    r1=search_with_url_or_keyword(url_or_keyword="手机",item_num=1)
     # with open("test1.txt", "w", encoding="utf8") as f:
     #     f.write(str(r2))
-    print("r1:", r1)
+    print("r1:",len(r1), r1)

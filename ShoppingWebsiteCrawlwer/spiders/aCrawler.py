@@ -141,8 +141,8 @@ class AcrawlerSpider(CrawlSpider):
         coupons_page = json.loads(requests.get(
             self.coupons_url.format(shopId=shop_id, venderId=vender_id, cat=cat,
                                     sku_id=sku_id)).text)
-        print(self.coupons_url.format(shopId=shop_id, venderId=vender_id, cat=cat,
-                                    sku_id=sku_id))
+        # print(self.coupons_url.format(shopId=shop_id, venderId=vender_id, cat=cat,
+        #                             sku_id=sku_id))
         coupons = ""
         for coupon in coupons_page["skuCoupon"]:
             discount = str(coupon["discount"])

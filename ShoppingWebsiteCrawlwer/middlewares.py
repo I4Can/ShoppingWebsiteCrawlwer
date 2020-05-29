@@ -106,8 +106,12 @@ class ShoppingwebsitecrawlwerDownloaderMiddleware(object):
 
     def item_scraped(self,item, response, spider):
         if spider.items is not None:
-            spider.items.append(item)
-            spider.current_num+=1
+            if spider.item_num:
+                if spider.current_num<spider.item_num:
+                    spider.items.append(item)
+                    spider.current_num+=1
+            else:
+                spider.items.append(item)
             if spider.item_num and  spider.current_num>=spider.item_num:
                 spider.crawler.engine.close_spider(spider,"enough item nums")
 
