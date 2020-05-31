@@ -15,31 +15,32 @@ from scrapy.crawler import Crawler
 from urllib.parse import urlparse
 from ..utils import get_config
 
+
 class AcrawlerSpider(CrawlSpider):
     name = 'aCrawler'
 
-    def __init__(self, name,config=None,keyword=None,item_num=None,result=None,config_file=None ,*args, **kwargs):
+    def __init__(self, name, config=None, keyword=None, item_num=None, result=None, config_file=None, *args, **kwargs):
         self.web_name = name
         if config_file is not None:
-            self.config=get_config(config_file)
+            self.config = get_config(config_file)
         else:
             self.config = config
-        self.item_num=item_num
-        self.current_num=0
-        self.items=result
+        self.item_num = item_num
+        self.current_num = 0
+        self.items = result
         self.rules = rules.get(config.get('rules'))
         self.price_url = self.config.get("price_url")
         self.price_url2 = self.config.get("price_url2")
         self.price_url3 = self.config.get("price_url3")
         self.price_url4 = self.config.get("price_url4")
-        self.price_url5=self.config.get("price_url5")
+        self.price_url5 = self.config.get("price_url5")
         self.coupons_url = self.config.get("coupons_url")
         start_urls = config.get('start_urls')
         if keyword is not None:
-            keywords=[keyword]
+            keywords = [keyword]
         else:
             keywords = self.config.get('keywords')
-        self.start_urls=[]
+        self.start_urls = []
         if start_urls:
             for k in keywords:
                 self.keyword = k
@@ -53,16 +54,12 @@ class AcrawlerSpider(CrawlSpider):
         self.allowed_domains = config.get('allowed_domains')
         super(AcrawlerSpider, self).__init__(*args, **kwargs)  # 得到父类--CrawlSpider的__init__()结果
 
-
     def parse_jd_skus(self, response):
-        """获取同一样商品的不同规格的商品
-        https://github.com/samrayleung/jd_spider/issues/14
-        """
-        # 猜测规格的数量
+
         text = response.text
         try:
-            color_size = eval(re.search("colorSize: (\[.*?\])", text).group(1))
-        except AttributeError:#找不懂colorSize，即没有不同型号
+            color_size = eval(re.search("colorSize: (\[.*?]),", text).group(1))
+        except AttributeError:  # 找不懂colorSize，即没有不同型号
             return [response.url.split("/")[3].split(".")[0]]
 
         return [str(sku["skuId"]) for sku in color_size]
@@ -106,10 +103,10 @@ class AcrawlerSpider(CrawlSpider):
                         if key == "id" and self.web_name == "jd":
                             loader.add_value(key, ";".join(self.parse_jd_skus(response)))
                         if key == "coupons" and self.web_name == 'jd':
-                            coupons=self.jd_get_coupons(response)
+                            coupons = self.jd_get_coupons(response)
                             loader.add_value(key, coupons)
                         elif self.web_name == "sn" and key == "coupons":
-                            coupons=self.sn_get_couponse(response)
+                            coupons = self.sn_get_couponse(response)
                             loader.add_value(key, coupons)
             if self.web_name == "jd":
                 highest_price, lowest_price = self.get_low_or_highest_price(response)
@@ -120,7 +117,7 @@ class AcrawlerSpider(CrawlSpider):
             loader.add_value("lowest_price", lowest_price)
             yield loader.load_item()
 
-    def sn_get_couponse(self,response):
+    def sn_get_couponse(self, response):
         coupons = ""
         cat = urlparse(response.url).path.split("/")[1]
         sku_id = urlparse(response.url).path.split("/")[2].split(".")[0]
@@ -137,7 +134,7 @@ class AcrawlerSpider(CrawlSpider):
                 coupons += "," + promotion["activityDesc"]
         return coupons
 
-    def jd_get_coupons(self,response):
+    def jd_get_coupons(self, response):
         vender_id = re.search("venderId:(.*?),", response.text).group(1)
         shop_id = re.search("shopId:(.*?),", response.text).group(1)
         cat = ",".join(str(i) for i in eval(re.search("cat:(.*?\]),", response.text).group(1)))
@@ -161,7 +158,6 @@ class AcrawlerSpider(CrawlSpider):
         except Exception as  e:
             raise e
         return coupons
-
 
     def sn_get_low_or_highest_price(self, response):
         sku_ids = ["0000000" + response.url.split("/")[4].split(".")[0]]
@@ -197,14 +193,14 @@ class AcrawlerSpider(CrawlSpider):
                     if item_info["price"] == "null" or item_info["price"] == "":
                         continue
                     prices.append(item_info["snPrice"])
-            if len(prices)>0:
+            if len(prices) > 0:
                 return max(float(price) for price in prices), min(float(price) for price in prices), ids
             else:
                 sku_id = sku_ids[0][7:]
-                url=self.price_url4.format(sku_id,sku_id,sup_id)
+                url = self.price_url4.format(sku_id, sku_id, sup_id)
                 data = re.search("pcData\((.*)\)", requests.get(url).text).group(1)
                 price = eval(data)["data"]["price"]["saleInfo"][0]["promotionPrice"]
-                return price,price, ids
+                return price, price, ids
         else:
             sku_id = sku_ids[0][7:]
             if len(set(sup_id)) == 1:
@@ -224,15 +220,15 @@ class AcrawlerSpider(CrawlSpider):
                     data = re.search("pcData\((.*)\)", requests.get(url).text).group(1)
             price = eval(data)["data"]["price"]["saleInfo"][0]["promotionPrice"]
             if price:
-                hprice=lprice=price
+                hprice = lprice = price
                 if "-" in price:
-                    lprice,hprice=price.split("-")
+                    lprice, hprice = price.split("-")
                 return hprice, lprice, ids
             else:
                 url = self.price_url4.format(sku_id, sku_id, sup_id)
                 try:
                     data = re.search("pcData\((.*)\)", requests.get(url).text).group(1)
-                except Exception as e :
+                except Exception as e:
                     pass
                     # print(response.url)
                     # print(url)
@@ -246,9 +242,9 @@ class AcrawlerSpider(CrawlSpider):
                 return hprice, lprice, ids
 
     def get_low_or_highest_price(self, response):
-        sku_ids=["J_"+sku for  sku in self.parse_jd_skus(response)]
-        skus=",".join(sku_ids)
-        price_page = re.search("jQuery1683353\((.*)\)",requests.get(self.price_url3.format(skus)).text).group(1)
-        prices=[info["p"] for info in eval(price_page)]
+        sku_ids = ["J_" + sku for sku in self.parse_jd_skus(response)]
+        skus = ",".join(sku_ids)
+        price_page = re.search("jQuery1683353\((.*)\)", requests.get(self.price_url3.format(skus)).text).group(1)
+        prices = [info["p"] for info in eval(price_page)]
         # prices = [float(self.parse_jd_price(sku_id)) for sku_id in self.parse_jd_skus(response)]
         return max(float(price) for price in prices), min(float(price) for price in prices)

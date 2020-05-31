@@ -2,6 +2,9 @@
 import sys
 import re
 from scrapy.utils.project import get_project_settings
+import requests
+import re
+from lxml import etree
 try:
     from utils import get_config
 except ModuleNotFoundError:
@@ -11,12 +14,18 @@ from multiprocessing.context import Process
 from multiprocessing import Manager
 from urllib.parse import urlparse
 import os
-
+from collections import defaultdict
+from ShoppingWebsiteCrawlwer.settings import MONGODB_SERVER,MONGODB_PORT
+import pymongo
 item_num = 2
 url_pattern = "http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
 jd_url = "https://item.jd.com/{}.html"
 sn_url = "https://product.suning.com/{}/{}.html"
-
+jd_cat_xpath="//div[@class='crumb fl clearfix']/div[5]/a/text()"
+sn_cat_xpath="//div[@class='breadcrumb']/div[@class='dropdown'][2]/span[@class='dropdown-text']/a/text()"
+sku_id=None
+client = pymongo.MongoClient(MONGODB_SERVER)
+headers={"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36 Edg/83.0.478.37"}
 
 def crawl(settings, spider, name, custom_settings, result=None, url=None, keyword=None, item_num=None):
     process = CrawlerProcess(settings)
@@ -54,9 +63,11 @@ def search_with_url_or_keyword(url_or_keyword, item_num=None):
         url_result = urlparse(url_or_keyword)
         if 'jd.com' in url_or_keyword:
             name = 'jd'
+            xp = jd_cat_xpath
             url = url_or_keyword
             if "item.m.jd.com" in url_or_keyword:
                 sku_id = url_result.path.split("/")[2].split(".")[0]
+
                 try:
                     int(sku_id)
                 except ValueError:
@@ -65,10 +76,15 @@ def search_with_url_or_keyword(url_or_keyword, item_num=None):
                     except AttributeError:
                         raise ValueError("Unexpected value for url_or_keyword")
                 url = jd_url.format(sku_id)
+            else:
+                sku_id=url.split("/")[3].split(".")[0]
+
         elif 'suning.com' in url_or_keyword:
+            xp = sn_cat_xpath
             name = 'sn'
             url = url_or_keyword
             if "m.suning.com" in url_or_keyword:
+
                 sup_id = url_result.path.split("/")[2]
                 sku_id = url_result.path.split("/")[3].split(".")[0]
                 try:
@@ -77,12 +93,35 @@ def search_with_url_or_keyword(url_or_keyword, item_num=None):
                 except ValueError:
                     raise ValueError("Unexpected value for args")
                 url = sn_url.format(sup_id, sku_id)
+            else:
+                sku_id=url.split("/")[4].split(".")[0]
+
         else:
             raise NotImplementedError("This Website has not been implemented.")
-        spider = "LCrawler"
-        process = spider_process(name=name, url=url, spider=spider, result=return_list)
-        process.start()
-        process.join()
+
+        db=client[name+"Good"]
+        text=requests.get(url,headers=headers).text
+        page=etree.HTML(text)
+        cat=page.xpath(xp)[0]
+        item_info=dict()
+        item_info["date_price"]=[]
+        r=list(db[cat].find({"id":{'$regex':'.*'+sku_id+'.*'}}))
+        for i in r:
+            i.pop('_id')
+            i.pop('id')
+            date_price=[]
+            date_price.append(i.pop('date'))
+            date_price.append(i.pop("lowest_price"))
+            date_price.append(i.pop("highest_price"))
+            item_info["date_price"].append(date_price)
+            if "info" not in item_info.keys():
+                item_info["info"]=i
+
+        return dict(item_info)
+        # spider = "LCrawler"
+        # process = spider_process(name=name, url=url, spider=spider, result=return_list)
+        # process.start()
+        # process.join()
 
     else:  # keyword
         if item_num is None:
@@ -101,5 +140,11 @@ if __name__ == "__main__":
 
     # r1 = search_with_url_or_keyword(url_or_keyword="https://item.taobao.com/item.htm?spm=a217m.12005862.1223185.2.2ddf1296YjHNEB&id=606930801180")
     #
-    r1=search_with_url_or_keyword(url_or_keyword="小米10",item_num=1)
-    print("r1:",len(r1), r1)
+    import time
+    t=time.time()
+
+    r1=search_with_url_or_keyword(url_or_keyword="https://item.jd.com/100005182618.html")
+    print(r1)
+    # r1=search_with_url_or_keyword(url_or_keyword="手机",item_num=1)
+    print(time.time()-t)
+    # print("r1:",len(r1), r1)

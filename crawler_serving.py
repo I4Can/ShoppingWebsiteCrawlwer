@@ -3,7 +3,10 @@ from flask_cors import CORS
 from gevent.pywsgi import WSGIServer
 from geventwebsocket.handler import WebSocketHandler
 from ShoppingWebsiteCrawlwer.crawler_api import search_with_url_or_keyword
+import pymongo
+from ShoppingWebsiteCrawlwer.settings import MONGODB_SERVER,MONGODB_PORT
 
+client = pymongo.MongoClient(MONGODB_SERVER)
 app = Flask(__name__)
 
 app.config.update(
