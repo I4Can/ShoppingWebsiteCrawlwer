@@ -6,7 +6,7 @@
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
-
+import os
 
 class ShoppingwebsitecrawlwerSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
@@ -113,7 +113,8 @@ class ShoppingwebsitecrawlwerDownloaderMiddleware(object):
             else:
                 spider.items.append(item)
             if spider.item_num and  spider.current_num>=spider.item_num:
-                spider.crawler.engine.close_spider(spider,"enough item nums")
+                os._exit(1)
+                # spider.crawler.engine.close_spider(spider,"enough item nums")
 
     def spider_closed(self,spider):
         pass

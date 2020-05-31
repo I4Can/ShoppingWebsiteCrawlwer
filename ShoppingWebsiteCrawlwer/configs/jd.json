@@ -15,16 +15,18 @@
       "method": "jd",
       "args": [
         1,
-        1
+        10
       ]
     }
   ],
+
   "allowed_domains": [
     "jd.com"
   ],
   "price_url": "https://p.3.cn/prices/mgets?pduid={}&skuIds=J_{}",
   "coupons_url": "https://cd.jd.com/promotion/v2?skuId={sku_id}&area=1_72_2799_0&venderId={venderId}&cat={cat}&shopId={shopId}",
   "price_url2": "https://p.3.cn/prices/get?pduid={}&skuid=J_{}",
+  "price_url3":"https://p.3.cn/prices/mgets?callback=jQuery1683353&skuIds={}",
   "rules": "jd",
   "item": {
     "class": "Good",

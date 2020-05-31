@@ -13,13 +13,17 @@ import random
 import requests
 from scrapy.crawler import Crawler
 from urllib.parse import urlparse
+from ..utils import get_config
 
 class AcrawlerSpider(CrawlSpider):
     name = 'aCrawler'
 
-    def __init__(self, name,config,keyword=None,item_num=None,result=None ,*args, **kwargs):
+    def __init__(self, name,config=None,keyword=None,item_num=None,result=None,config_file=None ,*args, **kwargs):
         self.web_name = name
-        self.config = config
+        if config_file is not None:
+            self.config=get_config(config_file)
+        else:
+            self.config = config
         self.item_num=item_num
         self.current_num=0
         self.items=result
@@ -70,7 +74,7 @@ class AcrawlerSpider(CrawlSpider):
         # import random
         # import requests
         try:
-            price = json.loads(requests.get(self.price_url.format(random.randint(1, 100000000), sku_id)).text)
+            price = json.loads(requests.get(self.price_url3.format(sku_id)).text)
             return price[0].get("p")
         except KeyError as err:
             if price['error'] == 'pdos_captcha':
@@ -242,5 +246,9 @@ class AcrawlerSpider(CrawlSpider):
                 return hprice, lprice, ids
 
     def get_low_or_highest_price(self, response):
-        prices = [float(self.parse_jd_price(sku_id)) for sku_id in self.parse_jd_skus(response)]
+        sku_ids=["J_"+sku for  sku in self.parse_jd_skus(response)]
+        skus=",".join(sku_ids)
+        price_page = re.search("jQuery1683353\((.*)\)",requests.get(self.price_url3.format(skus)).text).group(1)
+        prices=[info["p"] for info in eval(price_page)]
+        # prices = [float(self.parse_jd_price(sku_id)) for sku_id in self.parse_jd_skus(response)]
         return max(float(price) for price in prices), min(float(price) for price in prices)
