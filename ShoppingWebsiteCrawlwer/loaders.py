@@ -10,12 +10,10 @@ class GoodLoader(ItemLoader):
 
 
 class JDLoader(GoodLoader):
-    _id_out=Compose(lambda x:str(uuid.uuid4()))
     type_out=Compose(Join(),lambda x:x.split("：")[1].strip())
     name_out=Compose(Join(),lambda x:x.replace('\n',"").strip())
     sum_cat_out=Compose(Join(),lambda x:x.split("=")[1])
 
 class SNLoader(GoodLoader):
-    _id_out=Compose(lambda x:str(uuid.uuid4()))
     # id_out=Compose(Join(),lambda x:urlparse(x).path,lambda x:x.split("/")[1])
     name_out = Compose(Join(), lambda x: x.replace('\n', "").strip())

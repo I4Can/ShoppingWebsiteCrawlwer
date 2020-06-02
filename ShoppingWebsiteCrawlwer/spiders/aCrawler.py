@@ -11,6 +11,7 @@ import json
 import os
 import random
 import requests
+from bson import binary
 from scrapy.crawler import Crawler
 from urllib.parse import urlparse
 from ..utils import get_config
@@ -19,7 +20,8 @@ from ..utils import get_config
 class AcrawlerSpider(CrawlSpider):
     name = 'aCrawler'
 
-    def __init__(self, name, config=None, keyword=None, item_num=None, result=None, config_file=None, *args, **kwargs):
+    def __init__(self, name=None, config=None, keyword=None, item_num=None, result=None, config_file=None, *args,
+                 **kwargs):
         self.web_name = name
         if config_file is not None:
             self.config = get_config(config_file)
@@ -108,6 +110,12 @@ class AcrawlerSpider(CrawlSpider):
                         elif self.web_name == "sn" and key == "coupons":
                             coupons = self.sn_get_couponse(response)
                             loader.add_value(key, coupons)
+                        if key == "sale_volume" and self.web_name == "jd":
+                            pass
+                        elif self.web_name == "sn" and key == "sale_volume":
+                            continue
+                            coupons = self.sn_get_couponse(response)
+                            loader.add_value(key, coupons)
             if self.web_name == "jd":
                 highest_price, lowest_price = self.get_low_or_highest_price(response)
             elif self.web_name == "sn":
@@ -117,8 +125,19 @@ class AcrawlerSpider(CrawlSpider):
             loader.add_value("lowest_price", lowest_price)
             yield loader.load_item()
 
+    def get_sale_volume(self, response):
+
+        if self.web_name == "jd":
+            sku_id = response.url.split("/")[3].split(".")[0]
+            return json.loads(requests.get(
+                "https://club.jd.com/comment/productCommentSummaries.action?referenceIds=" + sku_id).text())[0].get("CommentCount")
+
+        else:
+            sku_id = urlparse(response.url).path.split("/")[2].split(".")[0]
+            pass
+
     def sn_get_couponse(self, response):
-        coupons = ""
+        coupons = []
         cat = urlparse(response.url).path.split("/")[1]
         sku_id = urlparse(response.url).path.split("/")[2].split(".")[0]
         try:
@@ -131,7 +150,9 @@ class AcrawlerSpider(CrawlSpider):
             raise e
         for promotion in coupons_page["promotions"]:
             if promotion["activityType"] == "7":
-                coupons += "," + promotion["activityDesc"]
+                quota = promotion["activityDesc"].split("用")[1]
+                discount = promotion["activityDesc"].split("用")[0][1:]
+                coupons.append({"quota": quota, "discount": discount})
         return coupons
 
     def jd_get_coupons(self, response):
@@ -144,15 +165,15 @@ class AcrawlerSpider(CrawlSpider):
                                     sku_id=sku_id)).text)
         # print(self.coupons_url.format(shopId=shop_id, venderId=vender_id, cat=cat,
         #                             sku_id=sku_id))
-        coupons = ""
+        coupons = []
         for coupon in coupons_page["skuCoupon"]:
             discount = str(coupon["discount"])
             quota = str(coupon["quota"])
             url = str(coupon["url"])
-            coupons += "," + "discount=" + discount + "||quota=" + quota + "||url=" + url
+            coupons.append({"quota": quota, "discount": discount, "url": url})
         try:
             for item in coupons_page['prom']['pickOneTag']:
-                coupons += ";" + item['content']
+                coupons.append(item['content'])
         except KeyError:
             pass
         except Exception as  e:

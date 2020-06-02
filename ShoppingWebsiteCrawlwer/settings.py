@@ -54,6 +54,7 @@ ROBOTSTXT_OBEY = False
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
    'ShoppingWebsiteCrawlwer.middlewares.ShoppingwebsitecrawlwerDownloaderMiddleware': 543,
+   # 'ShoppingWebsiteCrawlwer.middlewares.SeleniumMiddleware':544,
 }
 
 # Enable or disable extensions
@@ -91,3 +92,7 @@ AUTOTHROTTLE_DEBUG = False
 MONGODB_SERVER = "localhost"
 MONGODB_PORT = 27017
 MONGODB_DB = "Good"
+KEYWORDS = ['iPad']
+MAX_PAGE = 100
+SELENIUM_TIMEOUT = 5
+PHANTOMJS_SERVICE_ARGS = ['--load-images=false', '--disk-cache=true']

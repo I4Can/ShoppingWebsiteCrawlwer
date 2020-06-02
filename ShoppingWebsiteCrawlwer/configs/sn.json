@@ -7,7 +7,7 @@
     "USER_AGENT": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36"
   },
   "keywords": [
-    "雨伞"
+    "电脑","衣服","鞋子","零食","耳机","生鲜","裤子"
   ],
   "start_urls": [
     {
@@ -15,7 +15,7 @@
       "method": "sn",
       "args": [
         1,
-        10
+        8
       ]
     }
   ],
@@ -126,6 +126,13 @@
         }
       ],
       "coupons": [
+        {
+          "method": "func",
+          "args": [
+          ]
+        }
+      ],
+      "sale_volume": [
         {
           "method": "func",
           "args": [
