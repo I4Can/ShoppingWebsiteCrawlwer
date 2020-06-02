@@ -34,13 +34,6 @@
     "class": "Good",
     "loader": "SNLoader",
     "attrs": {
-            "_id": [
-              {
-                "method": "func",
-                "args": [
-                ]
-              }
-            ],
       "url": [
         {
           "method": "attr",

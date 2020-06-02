@@ -26,16 +26,3 @@ class Good(Item):
     coupons=Field() #
     source=Field()
     sale_volume=Field()
-
-class ScrapyseleniumItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    collection='taobao'
-    price =scrapy.Field()
-    store_url = scrapy.Field()
-    store_name = scrapy.Field()
-    item_url = scrapy.Field()
-    image_url=scrapy.Field()
-    title = scrapy.Field()
-    sale_volume=scrapy.Field()
-    where_produce=scrapy.Field()

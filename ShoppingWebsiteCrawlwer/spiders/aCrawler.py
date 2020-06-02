@@ -110,12 +110,9 @@ class AcrawlerSpider(CrawlSpider):
                         elif self.web_name == "sn" and key == "coupons":
                             coupons = self.sn_get_couponse(response)
                             loader.add_value(key, coupons)
-                        if key == "sale_volume" and self.web_name == "jd":
-                            pass
-                        elif self.web_name == "sn" and key == "sale_volume":
-                            continue
-                            coupons = self.sn_get_couponse(response)
-                            loader.add_value(key, coupons)
+                        if key == "sale_volume":
+                            sale_volume = self.get_sale_volume(response)
+                            loader.add_value(key, sale_volume)
             if self.web_name == "jd":
                 highest_price, lowest_price = self.get_low_or_highest_price(response)
             elif self.web_name == "sn":
@@ -129,15 +126,17 @@ class AcrawlerSpider(CrawlSpider):
 
         if self.web_name == "jd":
             sku_id = response.url.split("/")[3].split(".")[0]
-            return json.loads(requests.get(
-                "https://club.jd.com/comment/productCommentSummaries.action?referenceIds=" + sku_id).text())[0].get("CommentCount")
-
+            page = requests.get("https://club.jd.com/comment/productCommentSummaries.action?referenceIds=" + sku_id).text
+            return json.loads(page).get("CommentsCount")[0].get("CommentCount")
         else:
+            cat = urlparse(response.url).path.split("/")[1]
             sku_id = urlparse(response.url).path.split("/")[2].split(".")[0]
-            pass
+            url = "https://review.suning.com/ajax/cluster_review_satisfy/" \
+                  "cluster-30370327-{}-{}-----satisfy.htm?callback=satisfy"
+            page = requests.get(url.format(sku_id, cat)).text[8:-1]
+            return json.loads(page)["reviewCounts"][0].get("totalCount")
 
     def sn_get_couponse(self, response):
-        coupons = []
         cat = urlparse(response.url).path.split("/")[1]
         sku_id = urlparse(response.url).path.split("/")[2].split(".")[0]
         try:
@@ -150,10 +149,8 @@ class AcrawlerSpider(CrawlSpider):
             raise e
         for promotion in coupons_page["promotions"]:
             if promotion["activityType"] == "7":
-                quota = promotion["activityDesc"].split("用")[1]
-                discount = promotion["activityDesc"].split("用")[0][1:]
-                coupons.append({"quota": quota, "discount": discount})
-        return coupons
+                return promotion["activityDesc"]
+        return " "
 
     def jd_get_coupons(self, response):
         vender_id = re.search("venderId:(.*?),", response.text).group(1)
@@ -169,16 +166,16 @@ class AcrawlerSpider(CrawlSpider):
         for coupon in coupons_page["skuCoupon"]:
             discount = str(coupon["discount"])
             quota = str(coupon["quota"])
-            url = str(coupon["url"])
-            coupons.append({"quota": quota, "discount": discount, "url": url})
-        try:
-            for item in coupons_page['prom']['pickOneTag']:
-                coupons.append(item['content'])
-        except KeyError:
-            pass
-        except Exception as  e:
-            raise e
-        return coupons
+            return "满"+quota+"减"+discount
+        return " "
+        # try:
+        #     for item in coupons_page['prom']['pickOneTag']:
+        #         coupons.append(item['content'])
+        # except KeyError:
+        #     pass
+        # except Exception as  e:
+        #     raise e
+        # return coupons
 
     def sn_get_low_or_highest_price(self, response):
         sku_ids = ["0000000" + response.url.split("/")[4].split(".")[0]]

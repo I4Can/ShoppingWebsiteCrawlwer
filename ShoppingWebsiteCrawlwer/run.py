@@ -40,6 +40,3 @@ def run():
 if __name__=='__main__':
     # app.run("127.0.0.1",8000,debug = True)
     run()
-    # from ShoppingWebsiteCrawlwer.spiders.crawler_api import search_with_url_or_keyword
-    # result=search_with_url_or_keyword(url_or_keyword="https://item.jd.com/100009216176.html")
-    # print(result)

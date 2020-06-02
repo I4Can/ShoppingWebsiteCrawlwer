@@ -32,13 +32,6 @@
     "class": "Good",
     "loader": "JDLoader",
     "attrs": {
-      "_id": [
-        {
-          "method": "func",
-          "args": [
-          ]
-        }
-      ],
       "url": [
         {
           "method": "attr",

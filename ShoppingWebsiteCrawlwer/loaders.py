@@ -2,7 +2,7 @@ import datetime
 
 from scrapy.loader import ItemLoader
 from scrapy.loader.processors import TakeFirst, Join, Compose
-import uuid
+
 
 class GoodLoader(ItemLoader):
     default_output_processor = TakeFirst()
