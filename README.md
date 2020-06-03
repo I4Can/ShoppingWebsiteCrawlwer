@@ -53,9 +53,12 @@ spiders.crawler_api.search_with_url_or_keyword()
 
     输入2：关键字(url_or_keyword)，如“手机”，“衣服”，
            每个网站需要爬取的商品个数(item_num)
-    输出2：京东、苏宁分别推荐的前item_num个数商品
-           输出格式->[item1,item2,...,itemN,(jd)
-                      item1,item2,...,itemN(sn)]
+    输出2：各大电商网站分别推荐的前item_num个数商品
+           输出格式->[item1,item2,...,itemN,
+                      item1,item2,...,itemN,
+                      item1,item2,...,itemN
+                      ...
+                      item1,item2,...,itemN]
 <br>
 
 
